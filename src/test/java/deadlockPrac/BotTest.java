@@ -1,4 +1,4 @@
-package org.deadlock.bot;
+package deadlockPrac;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

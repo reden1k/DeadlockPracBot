@@ -1,4 +1,4 @@
-package org.deadlock.bot;
+package deadlockPrac.bot;
 
 
 import net.dv8tion.jda.api.JDA;
@@ -31,7 +31,7 @@ public class Bot extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        System.out.println("e");
+
     }
 
     @Override
