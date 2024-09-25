@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 
 public class Embed {
-    public static MessageEmbed Message(String title, @Nullable String description, @Nullable String imageUrl, ColorType colorType) {
+    public static MessageEmbed message(String title, @Nullable String description, @Nullable String imageUrl, ColorType colorType) {
         EmbedBuilder builder = new EmbedBuilder();
         Color color = MessageColor.getColor(colorType);
 

@@ -1,6 +1,7 @@
 package deadlockPrac.bot;
 
 
+import deadlockPrac.message.SendMessages;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -12,11 +13,12 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.NotNull;
 
 public class Bot extends ListenerAdapter {
-    private static String TOKEN = "MTI4Nzg5NjYxMjQxMjA2Nzg3MQ.GfdENW.PcNU1rSFD3eEcZbCmx5NSqN2injoIWP6uHHeFs";
+    private static final String TOKEN = "MTI4Nzg5NjYxMjQxMjA2Nzg3MQ.GfdENW.PcNU1rSFD3eEcZbCmx5NSqN2injoIWP6uHHeFs";
+    public static JDA jda;
 
     public static void main( String[] args ) {
         try {
-        JDA jda = JDABuilder.createDefault(TOKEN)
+         jda = JDABuilder.createDefault(TOKEN)
                 .setActivity(Activity.customStatus("Status: Developing"))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES)
                 .disableCache(CacheFlag.VOICE_STATE)
@@ -27,6 +29,7 @@ public class Bot extends ListenerAdapter {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        SendMessages.send();
     }
 
     @Override
