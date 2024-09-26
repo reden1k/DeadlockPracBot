@@ -1,22 +1,18 @@
 package deadlockPrac.bot;
 
+import deadlockPrac.members.QueueType;
 import deadlockPrac.message.builder.Embed;
 import deadlockPrac.message.colors.ColorType;
-import deadlockPrac.message.text.QueueStartMessage;
-import deadlockPrac.message.text.QueueText;
-import deadlockPrac.queue.system.Queue;
-import deadlockPrac.queue.system.roles.QueueRole;
-import deadlockPrac.queue.system.team.QueueType;
-import deadlockPrac.queue.system.team.Team;
+import deadlockPrac.message.text.Global;
+import deadlockPrac.message.text.Queue;
+import deadlockPrac.message.text.QueueChat;
+import deadlockPrac.queue.Searcher;
+import deadlockPrac.verification.Verification;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class InteractionHandler {
@@ -28,49 +24,6 @@ public class InteractionHandler {
         if (event.getUser().isBot()) {
             return;
         }
-
-        if (channelName.equals("create-team") && commandName.equals("create-team")) {
-            Member teamLeader = event.getMember();
-            List<IMentionable> mentionableList = new ArrayList<>();
-            List<OptionMapping> optionMappings = event.getOptionsByType(OptionType.MENTIONABLE);
-
-            for (OptionMapping mapping : optionMappings) {
-                mentionableList.add(mapping.getAsMentionable());
-            }
-
-            List<Member> players = new ArrayList<>(Arrays.asList(teamLeader));
-
-            for (IMentionable mentionable : mentionableList) {
-                if (mentionable instanceof Role) {
-                    event.reply("You mentioned a role!").setEphemeral(true).queue();
-                    return;
-                }
-
-                if (mentionable instanceof Member) {
-                    Member player = (Member) mentionable;
-                    players.add(player);
-                }
-            }
-
-            Team team = Team.create(players);
-
-            try {
-                if (team.isCorrect() && !Queue.hasTeam(teamLeader)) {
-//                    System.out.println(team);
-                    MessageEmbed successCreateTeam = Embed.message("Success", team.output(), null, ColorType.SUCCESS);
-
-                    QueueRole.createTeamRole(team);
-                    Queue.teams.add(team);
-
-                    event.replyEmbeds(successCreateTeam).setEphemeral(true).queue();
-                }
-            } catch (Exception ex) {
-                MessageEmbed errorCreateTeam = Embed.message("Error", ex.getMessage(), null, ColorType.ERROR);
-
-                event.replyEmbeds(errorCreateTeam).setEphemeral(true).queue();
-            }
-        }
-
     }
     public static void buttonHandler(ButtonInteractionEvent event) {
         String buttonId = event.getComponentId();
@@ -78,23 +31,53 @@ public class InteractionHandler {
 
         switch (buttonId) {
             case("verification") -> {
-                Role role = Bot.guild.getRoleById(ServerRoleIds.VERIFIED);
-                Role newMemberRole = Bot.guild.getRoleById(ServerRoleIds.NEW_MEMBER);
+                Role role = Bot.guild.getRoleById(RoleIds.VERIFIED);
+                Role newMemberRole = Bot.guild.getRoleById(RoleIds.NEW_MEMBER);
 
                 if (role != null) {
                     Bot.guild.addRoleToMember(member, role).queue(
                             success ->  {
                                 Bot.guild.removeRoleFromMember(member, newMemberRole).queue();
-                                event.reply("Verified").setEphemeral(true).queue();
+                                try {
+                                    Verification.verify(member);
+                                    event.replyEmbeds(
+                                            Embed.message(
+                                                    "Verified",
+                                                    null,
+                                                    Global.IMAGE_URL_SUCCESS,
+                                                    ColorType.SUCCESS
+                                            )
+                                    ).setEphemeral(true)
+                                            .queue();
+                                } catch (Exception e) {
+                                    event.replyEmbeds(
+                                            Embed.message(
+                                                    Global.TITLE_ERROR,
+                                                    e.getMessage(),
+                                                    Global.IMAGE_URL_ERROR,
+                                                    ColorType.ERROR
+                                            )
+                                    ).setEphemeral(true)
+                                            .queue();
+                                }
                             },
-                            error -> event.reply("Error, can't verify").setEphemeral(true).queue()
+                            error -> event.replyEmbeds(
+                                            Embed.message(
+                                                    Global.TITLE_ERROR,
+                                                    "Error can't verify",
+                                                    Global.IMAGE_URL_ERROR,
+                                                    ColorType.ERROR
+                                            )
+                                    ).setEphemeral(true)
+                                    .queue()
                     );
                 } else {
                     event.reply("Role doesn't exist").setEphemeral(true).queue();
                 }
             }
+
             case("lang-ru") -> {
-                Role role = Bot.guild.getRoleById(ServerRoleIds.LANG_RU);
+                Role role = Bot.guild.getRoleById(RoleIds.LANG_RU);
 
                 List<Role> roles = member.getRoles();
 
@@ -116,7 +99,7 @@ public class InteractionHandler {
                 }
             }
             case("lang-eng") -> {
-                Role role = Bot.guild.getRoleById(ServerRoleIds.LANG_ENG);
+                Role role = Bot.guild.getRoleById(RoleIds.LANG_ENG);
 
                 List<Role> roles = member.getRoles();
 
@@ -137,22 +120,32 @@ public class InteractionHandler {
                     event.reply("Role doesn't exist").setEphemeral(true).queue();
                 }
             }
-            case("queue") -> {
-                if (!Queue.isLeader(member)) {
-                    event.reply("Only team leader can start queue").setEphemeral(true).queue();
-                    return;
-                }
-
-                event.editMessageEmbeds(QueueText.update()).queue();
-                event.replyEmbeds(QueueStartMessage.createMessage(member)).queue();
-                Queue.start(member);
+            case("1v1") -> {
+                Searcher.startQueue(member, QueueType.ONE_VS_ONE);
+                Queue.updateQueueMessage(event);
+                Queue.sendQueuingMessage(event);
+            }
+            case("2v2") -> {
+                Searcher.startQueue(member, QueueType.TWO_VS_TWO);
+                Queue.updateQueueMessage(event);
+                Queue.sendQueuingMessage(event);
+            }
+            case("4v4") -> {
+                Searcher.startQueue(member, QueueType.FOUR_VS_FOUR);
+                Queue.updateQueueMessage(event);
+                Queue.sendQueuingMessage(event);
+            }
+            case("6v6") -> {
+                Searcher.startQueue(member, QueueType.TEAM_ON_TEAM);
+                Queue.updateQueueMessage(event);
+                Queue.sendQueuingMessage(event);
             }
         }
     }
 
     public static void guildJoinHandler(GuildMemberJoinEvent event) {
         Member member = event.getMember();
-        Role role = Bot.guild.getRoleById(ServerRoleIds.NEW_MEMBER);
+        Role role = Bot.guild.getRoleById(RoleIds.NEW_MEMBER);
 
         Bot.guild.addRoleToMember(member, role).queue();
     }
