@@ -141,7 +141,7 @@ public class Team {
     public boolean isCorrect() throws IllegalArgumentException {
         List<Member> players = new ArrayList<>(Arrays.asList(teamLeader, player1, player2, player3, player4, player5));
 
-        Long prevId = 0L;
+        long prevId = 0L;
         if (teamType == TeamType.TEAM_VS_TEAM) {
 
             for (Member player : players) {
@@ -161,19 +161,19 @@ public class Team {
         builder.append("Team leader: ").append(teamLeader.getUser().getName());
 
         if (player1 != null) {
-            builder.append("\n1. ").append(player1.getUser().getName()).toString();
+            builder.append("\n1. ").append(player1.getUser().getName());
         }
         if (player2 != null) {
-            builder.append("\n2. ").append(player2.getUser().getName()).toString();
+            builder.append("\n2. ").append(player2.getUser().getName());
         }
         if (player3 != null) {
-            builder.append("\n3. ").append(player3.getUser().getName()).toString();
+            builder.append("\n3. ").append(player3.getUser().getName());
         }
         if (player4 != null) {
-            builder.append("\n4. ").append(player4.getUser().getName()).toString();
+            builder.append("\n4. ").append(player4.getUser().getName());
         }
         if (player5 != null) {
-            builder.append("\n5. ").append(player5.getUser().getName()).toString();
+            builder.append("\n5. ").append(player5.getUser().getName());
         }
 
         return builder.toString();

@@ -1,6 +1,5 @@
 package deadlockPrac.queue.system;
 
-import deadlockPrac.message.text.QueueText;
 import deadlockPrac.queue.system.team.QueueType;
 import deadlockPrac.queue.system.team.Team;
 import deadlockPrac.queue.system.team.TeamType;
@@ -8,18 +7,16 @@ import net.dv8tion.jda.api.entities.Member;
 
 import java.util.ArrayList;
 
+
 public class Queue {
-    public static final ArrayList<Team> teams = new ArrayList<>(); // key - leader id, value - team
+    //TODO Make queue logic more elastic
+    public static final ArrayList<Team> teams = new ArrayList<>();
 
     public static void start(Member member) {
         Team team = Queue.getTeamByLeader(member);
 
-        team.setQueueType(QueueType.LOOKING);
-
-        for (Team enemyTeam : teams) {
-            if (enemyTeam.getQueueType() == team.getQueueType() && enemyTeam.getTeamType() == team.getTeamType()) {
-
-            }
+        if (team != null) {
+            team.setQueueType(QueueType.LOOKING);
         }
     }
 
@@ -31,8 +28,13 @@ public class Queue {
                 return true;
             }
         }
-        throw new IllegalCallerException("You already have a team");
+        return false;
     }
+
+    public static boolean availableCreateTeam(Member member) {
+        return false;
+    }
+
     public static boolean isLeader(Member member) {
         for (Team team : teams) {
             long leaderId = team.getTeamLeader().getIdLong();
@@ -44,7 +46,7 @@ public class Queue {
         return false;
     }
 
-    private static Team getTeamByLeader(Member member) {
+    public static Team getTeamByLeader(Member member) {
         for (Team team : teams) {
             long leaderId = team.getTeamLeader().getIdLong();
 
@@ -53,6 +55,29 @@ public class Queue {
             }
         }
         return null;
+    }
+
+    public static String getTeamType(Team team) {
+        switch (team.getTeamType()) {
+            case ONE_VS_ONE -> {
+                return "1v1";
+            }
+            case TWO_VS_TWO -> {
+                return "2v2";
+            }
+            case THREE_VS_THREE -> {
+                return "3v3";
+            }
+            case FOUR_VS_FOUR -> {
+                return "4v4";
+            }
+            case FIVE_VS_FIVE -> {
+                return "5v5";
+            }
+            default -> {
+                return "6v6";
+            }
+        }
     }
 
     public static int getActiveCurrentQueueCount() {

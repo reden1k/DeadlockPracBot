@@ -2,6 +2,7 @@ package deadlockPrac.bot;
 
 import deadlockPrac.message.builder.Embed;
 import deadlockPrac.message.colors.ColorType;
+import deadlockPrac.message.text.QueueStartMessage;
 import deadlockPrac.message.text.QueueText;
 import deadlockPrac.queue.system.Queue;
 import deadlockPrac.queue.system.roles.QueueRole;
@@ -143,6 +144,7 @@ public class InteractionHandler {
                 }
 
                 event.editMessageEmbeds(QueueText.update()).queue();
+                event.replyEmbeds(QueueStartMessage.createMessage(member)).queue();
                 Queue.start(member);
             }
         }
