@@ -5,34 +5,25 @@ import deadlockPrac.message.builder.Embed;
 import deadlockPrac.message.colors.ColorType;
 import deadlockPrac.message.text.Global;
 import deadlockPrac.message.text.Queue;
-import deadlockPrac.message.text.QueueChat;
 import deadlockPrac.queue.Searcher;
 import deadlockPrac.verification.Verification;
+import deadlockPrac.voice.chat.VoiceChat;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 
 import java.util.List;
 
 public class InteractionHandler {
-
-    public static void slashHandler(SlashCommandInteractionEvent event) {
-        String channelName = event.getChannel().getName();
-        String commandName = event.getFullCommandName();
-
-        if (event.getUser().isBot()) {
-            return;
-        }
-    }
     public static void buttonHandler(ButtonInteractionEvent event) {
         String buttonId = event.getComponentId();
         Member member = event.getMember();
 
         switch (buttonId) {
             case("verification") -> {
-                Role role = Bot.guild.getRoleById(RoleIds.VERIFIED);
-                Role newMemberRole = Bot.guild.getRoleById(RoleIds.NEW_MEMBER);
+                Role role = Bot.guild.getRoleById(RoleId.VERIFIED);
+                Role newMemberRole = Bot.guild.getRoleById(RoleId.NEW_MEMBER);
 
                 if (role != null) {
                     Bot.guild.addRoleToMember(member, role).queue(
@@ -77,7 +68,7 @@ public class InteractionHandler {
             }
 
             case("lang-ru") -> {
-                Role role = Bot.guild.getRoleById(RoleIds.LANG_RU);
+                Role role = Bot.guild.getRoleById(RoleId.LANG_RU);
 
                 List<Role> roles = member.getRoles();
 
@@ -99,7 +90,7 @@ public class InteractionHandler {
                 }
             }
             case("lang-eng") -> {
-                Role role = Bot.guild.getRoleById(RoleIds.LANG_ENG);
+                Role role = Bot.guild.getRoleById(RoleId.LANG_ENG);
 
                 List<Role> roles = member.getRoles();
 
@@ -143,9 +134,13 @@ public class InteractionHandler {
         }
     }
 
+    public static void voiceChatJoinHandler(GuildVoiceUpdateEvent event) {
+        VoiceChat.voiceChatJoinInteractionHandler(event);
+    }
+
     public static void guildJoinHandler(GuildMemberJoinEvent event) {
         Member member = event.getMember();
-        Role role = Bot.guild.getRoleById(RoleIds.NEW_MEMBER);
+        Role role = Bot.guild.getRoleById(RoleId.NEW_MEMBER);
 
         Bot.guild.addRoleToMember(member, role).queue();
     }

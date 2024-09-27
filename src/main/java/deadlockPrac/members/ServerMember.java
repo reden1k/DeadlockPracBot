@@ -44,14 +44,6 @@ public class ServerMember {
                 member.getUser()
         );
     }
-    public static void updateServerMember(Member member) {
-        for (ServerMember serverMember : Bot.serverMembers) {
-            if (member.getIdLong() == serverMember.getId() && !member.getUser().getName().equals(serverMember.getName())) {
-                serverMember.setName(member.getUser().getName());
-                return;
-            }
-        }
-    }
 
     public static void updateServerMember(ServerMember member) {
         for (ServerMember serverMember : Bot.serverMembers) {

@@ -1,5 +1,6 @@
 package deadlockPrac.bot;
 
+import deadlockPrac.loader.Loader;
 import deadlockPrac.members.ServerMember;
 import deadlockPrac.message.SendMessages;
 import net.dv8tion.jda.api.JDA;
@@ -7,11 +8,12 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.dv8tion.jda.internal.handle.GuildMembersChunkHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -28,8 +30,12 @@ public class Bot extends ListenerAdapter {
         try {
          jda = JDABuilder.createDefault(TOKEN)
                 .setActivity(Activity.customStatus("Status: Developing"))
-                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES)
-                .disableCache(CacheFlag.VOICE_STATE)
+                .enableIntents(
+                        GatewayIntent.GUILD_MEMBERS,
+                        GatewayIntent.GUILD_PRESENCES,
+                        GatewayIntent.GUILD_VOICE_STATES
+                )
+                 .disableCache(CacheFlag.MEMBER_OVERRIDES)
                 .addEventListeners(new Bot())
                 .build();
 
@@ -37,15 +43,12 @@ public class Bot extends ListenerAdapter {
 
             guild = jda.getGuildById(guildId);
 
+            Loader.execute();
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         SendMessages.send();
-    }
-
-    @Override
-    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        InteractionHandler.slashHandler(event);
     }
 
     @Override
@@ -56,5 +59,10 @@ public class Bot extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         InteractionHandler.guildJoinHandler(event);
+    }
+
+    @Override
+    public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event) {
+        InteractionHandler.voiceChatJoinHandler(event);
     }
 }

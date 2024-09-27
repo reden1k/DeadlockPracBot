@@ -26,8 +26,8 @@ public class Queue {
                 "\n2v2: " + Searcher.getQueueOnline(QueueType.TWO_VS_TWO) +
                 "\n1v1: " + Searcher.getQueueOnline(QueueType.ONE_VS_ONE);
 
-        event.editMessageEmbeds(
-                Embed.message(TITLE_MAIN, queueText, IMAGE_URL_MAIN, ColorType.DEFAULT)
+        channel.editMessageEmbedsById(
+                1289181934651441204L, Embed.message(TITLE_MAIN, queueText, IMAGE_URL_MAIN, ColorType.DEFAULT)
         ).queue();
     }
 
