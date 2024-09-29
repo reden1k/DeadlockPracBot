@@ -7,13 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class RoleId {
-    public static final Long BOT = 1288419510705197141L;
+    public static final Long BOT = 1289245764882792492L;
     public static final Long MANAGER = 1288520382562963486L;
     public static final Long HELPER = 1288520448925106358L;
     public static final Long DOT = 1287779653070749793L;
 
 
-    public static final Long NEW_MEMBER = 1288360433723379752L;
+    public static final Long NEW_MEMBER = 1289241488219308093L;
     public static final Long VERIFIED = 1288355242286649375L;
     public static final Long LANG_RU = 1288355413829615616L;
     public static final Long LANG_ENG = 1288355442694684692L;

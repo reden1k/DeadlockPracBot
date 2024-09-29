@@ -2,6 +2,7 @@ package deadlockPrac.loader;
 
 import deadlockPrac.bot.Bot;
 import deadlockPrac.bot.RoleId;
+import deadlockPrac.members.ServerMembers;
 import deadlockPrac.members.ServerMember;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -13,19 +14,18 @@ public class Loader {
     public static void execute() {
         cleanUpRoles();
         loadUsersAfterRestart();
-        System.out.println(Bot.serverMembers);
+        ServerMembers.outputMembers();
 
-        System.out.println("\n\nLoaded!");
+        System.out.println("\nLoaded!");
     }
 
     private static void loadUsersAfterRestart() {
-        List<Member> members = Bot.guild.getMembers();
+        List<Member> members = Bot.guild.loadMembers().get();
 
         for (Member member : members) {
-            System.out.println(member.getEffectiveName());
-            if (isVerified(member)) {
+            if (isVerified(member) && !member.getUser().isBot()) {
                 ServerMember serverMember = ServerMember.create(member);
-                Bot.serverMembers.add(serverMember);
+                ServerMembers.add(serverMember);
             }
         }
     }

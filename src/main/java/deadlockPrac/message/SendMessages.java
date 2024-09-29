@@ -13,10 +13,12 @@ public class SendMessages {
         MessageEmbed language = Embed.message(Language.TITLE, Language.TEXT, Language.IMAGE_URL, ColorType.DEFAULT);
         MessageEmbed queue = Embed.message(Queue.TITLE_MAIN, Queue.TEXT_MAIN, Queue.IMAGE_URL_MAIN, ColorType.DEFAULT);
         MessageEmbed role = Embed.message(Role.TITLE, Role.TEXT, Role.IMAGE_URL, ColorType.DEFAULT);
-        MessageEmbed introduction = Embed.message(Introduction.TITLE, Introduction.TEXT, Introduction.IMAGE_URL, ColorType.DEFAULT);
+        MessageEmbed introduction = Embed.message(Introduction.TITLE, Introduction.TEXT, Introduction.IMAGE_URL, ColorType.DEFAULT, Introduction.fields, Introduction.footer);
+        MessageEmbed howTo = Embed.message(HowTo.TITLE, HowTo.TEXT, HowTo.IMAGE_URL, ColorType.DEFAULT);
 
+//        HowTo.channel.sendMessageEmbeds(howTo).queue();
 //        Role.channel.sendMessageEmbeds(role).queue();
-//        Introduction.channel.sendMessage(Introduction.TEXT).queue();
+//        Introduction.channel.sendMessageEmbeds(introduction).queue();
 //        Queue.channel.sendMessageEmbeds(queue).setActionRow(Btn.oneVsOne, Btn.twoVsTwo, Btn.fourVsFour, Btn.teamOnTeam).queue();
 //        ServerRules.channel.sendMessageEmbeds(serverRules).queue();
 //        Verification.channel.sendMessageEmbeds(verification).setActionRow(Btn.verification).queue();

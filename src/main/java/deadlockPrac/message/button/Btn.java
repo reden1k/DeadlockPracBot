@@ -12,4 +12,5 @@ public class Btn {
     public static final Button twoVsTwo = Button.secondary("2v2", "2v2");
     public static final Button fourVsFour = Button.secondary("4v4", "4v4");
     public static final Button teamOnTeam = Button.secondary("6v6", "6v6");
+    public static final Button cancelQueue = Button.danger("cancel::queue", "Cancel");
 }

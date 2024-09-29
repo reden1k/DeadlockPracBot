@@ -31,7 +31,7 @@ public class RoleManager {
     public static void removeQueueRole(ServerMember member) {
         Role queueStatus = Bot.guild.getRoleById(member.getQueueRoleId());
 
-        Bot.guild.removeRoleFromMember(member.getUser(), queueStatus).queue();
+        Bot.guild.removeRoleFromMember(member.getUser(), queueStatus).complete();
         queueStatus.delete().queue();
     }
 

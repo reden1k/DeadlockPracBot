@@ -112,24 +112,33 @@ public class InteractionHandler {
                 }
             }
             case("1v1") -> {
+                Queue.sendQueuingMessage(event, "1v1");
                 Searcher.startQueue(member, QueueType.ONE_VS_ONE);
-                Queue.updateQueueMessage(event);
-                Queue.sendQueuingMessage(event);
+                Queue.updateQueueMessage();
             }
             case("2v2") -> {
+                Queue.sendQueuingMessage(event, "2v2");
                 Searcher.startQueue(member, QueueType.TWO_VS_TWO);
-                Queue.updateQueueMessage(event);
-                Queue.sendQueuingMessage(event);
+                Queue.updateQueueMessage();
             }
             case("4v4") -> {
+                Queue.sendQueuingMessage(event, "4v4");
                 Searcher.startQueue(member, QueueType.FOUR_VS_FOUR);
-                Queue.updateQueueMessage(event);
-                Queue.sendQueuingMessage(event);
+                Queue.updateQueueMessage();
             }
             case("6v6") -> {
+                Queue.sendQueuingMessage(event, "6v6");
                 Searcher.startQueue(member, QueueType.TEAM_ON_TEAM);
-                Queue.updateQueueMessage(event);
-                Queue.sendQueuingMessage(event);
+                Queue.updateQueueMessage();
+            }
+            case("cancel::queue") -> {
+                Searcher.stopQueue(member);
+                Queue.updateQueueMessage();
+
+                event.replyEmbeds(
+                        Embed.message("Canceled queue!", null, null, ColorType.DEFAULT)
+                ).setEphemeral(true)
+                        .queue();
             }
         }
     }

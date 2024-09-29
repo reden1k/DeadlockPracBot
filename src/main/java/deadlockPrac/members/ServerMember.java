@@ -1,6 +1,6 @@
 package deadlockPrac.members;
 
-import deadlockPrac.bot.Bot;
+import deadlockPrac.queue.RoleManager;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.Nullable;
@@ -8,13 +8,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.NoSuchElementException;
 
 public class ServerMember {
-    Long id;
-    String name;
-    QueueStatus queueStatus;
-    QueueType queueType;
-    Long queueRoleId;
-    Long createdChannelId;
-    User user;
+    private Long id;
+    private String name;
+    private QueueStatus queueStatus;
+    private QueueType queueType;
+    private Long queueRoleId;
+    private Long createdChannelId;
+    private User user;
     public ServerMember(
             Long id,
             String name,
@@ -46,7 +46,7 @@ public class ServerMember {
     }
 
     public static void updateServerMember(ServerMember member) {
-        for (ServerMember serverMember : Bot.serverMembers) {
+        for (ServerMember serverMember : ServerMembers.get()) {
             if (member.getId() == serverMember.getId() && !member.getUser().getName().equals(serverMember.getName())) {
                 serverMember.setName(member.getUser().getName());
                 return;
@@ -55,7 +55,7 @@ public class ServerMember {
     }
 
     public static ServerMember getServerMember(Member member) {
-        for (ServerMember serverMember : Bot.serverMembers) {
+        for (ServerMember serverMember : ServerMembers.get()) {
             if (member.getIdLong() == serverMember.getId()) {
                 return serverMember;
             }
@@ -64,12 +64,12 @@ public class ServerMember {
     }
 
     public static void addToServerMembers(ServerMember serverMember) throws Exception {
-        for (ServerMember member : Bot.serverMembers) {
+        for (ServerMember member : ServerMembers.get()) {
             if (member.getId() == serverMember.getId()) {
                 throw new Exception("Already contains in list of users");
             }
         }
-        Bot.serverMembers.add(serverMember);
+        ServerMembers.get().add(serverMember);
     }
 
     public void queuing(QueueType enumQueueType) {
@@ -78,6 +78,8 @@ public class ServerMember {
     }
 
     public void resetAfterQueue() {
+        RoleManager.removeQueueRole(this);
+
         queueRoleId = null;
         queueStatus = QueueStatus.NOT_STARTED;
         queueType = QueueType.NONE;
@@ -142,7 +144,6 @@ public class ServerMember {
     public void setQueueStatus(QueueStatus queueStatus) {
         this.queueStatus = queueStatus;
     }
-
     public void setQueueRoleId(Long queueRoleId) {
         this.queueRoleId = queueRoleId;
     }
@@ -156,9 +157,9 @@ public class ServerMember {
     }
 
     public String toString() {
-        return "Name: " + name + "\n" +
+        return "\nName: " + name + "\n" +
                 "ID: " + id + "\n" +
                 "QueueType: " + queueType + "\n" +
-                "QueueStatus: " + queueStatus + "\n";
+                "QueueStatus: " + queueStatus;
     }
 }

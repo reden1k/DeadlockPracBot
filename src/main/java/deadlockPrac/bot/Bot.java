@@ -1,7 +1,6 @@
 package deadlockPrac.bot;
 
 import deadlockPrac.loader.Loader;
-import deadlockPrac.members.ServerMember;
 import deadlockPrac.message.SendMessages;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -12,30 +11,23 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import net.dv8tion.jda.internal.handle.GuildMembersChunkHandler;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-
 
 public class Bot extends ListenerAdapter {
     private static final String TOKEN = "MTI4Nzg5NjYxMjQxMjA2Nzg3MQ.GfdENW.PcNU1rSFD3eEcZbCmx5NSqN2injoIWP6uHHeFs";
     public static JDA jda;
-    public static Guild guild;
+    public static volatile Guild guild;
     public static final long guildId = 1287777587757584494L;
-    public static final ArrayList<ServerMember> serverMembers = new ArrayList<>();
 
     public static void main( String[] args ) {
         try {
          jda = JDABuilder.createDefault(TOKEN)
                 .setActivity(Activity.customStatus("Status: Developing"))
-                .enableIntents(
-                        GatewayIntent.GUILD_MEMBERS,
-                        GatewayIntent.GUILD_PRESENCES,
-                        GatewayIntent.GUILD_VOICE_STATES
-                )
-                 .disableCache(CacheFlag.MEMBER_OVERRIDES)
+                 .enableIntents(
+                         GatewayIntent.GUILD_MEMBERS,
+                         GatewayIntent.GUILD_PRESENCES,
+                         GatewayIntent.GUILD_VOICE_STATES
+                 )
                 .addEventListeners(new Bot())
                 .build();
 
@@ -44,7 +36,6 @@ public class Bot extends ListenerAdapter {
             guild = jda.getGuildById(guildId);
 
             Loader.execute();
-
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
