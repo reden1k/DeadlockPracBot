@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.jetbrains.annotations.NotNull;
 
 public class Bot extends ListenerAdapter {
-    private static final String TOKEN = "MTI4Nzg5NjYxMjQxMjA2Nzg3MQ.GfdENW.PcNU1rSFD3eEcZbCmx5NSqN2injoIWP6uHHeFs";
+    private static final String TOKEN = "token";
     public static JDA jda;
     public static volatile Guild guild;
     public static final long guildId = 1287777587757584494L;
